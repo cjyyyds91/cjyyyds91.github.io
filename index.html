@@ -3,115 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>快手跳转</title>
+    <title>快手极速跳转</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{
+            min-height:100vh;
+            background:url('https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300') center/cover fixed;
+            overflow-y:scroll;
+            font-family:'PingFang SC','Microsoft YaHei',sans-serif;
+            position:relative;
         }
-        
-        body {
-            min-height: 100vh;
-            background: url('https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300') center/cover fixed;
-            overflow: hidden;
-            position: relative;
-            font-family: Arial, sans-serif;
+        body::before{
+            content:"";
+            position:fixed;
+            top:0;left:0;
+            width:100%;height:100%;
+            background:inherit;
+            z-index:-1;
         }
-        
-        /* 无限滚动区域 */
-        .scroll-area {
-            height: 200vh;
+        .scroll-area{height:200vh}
+        .avatar{
+            position:fixed;
+            top:20px;left:20px;
+            width:60px;height:60px;
+            border-radius:50%;
+            background:#fff;
+            border:2px solid #fff;
+            box-shadow:0 2px 10px rgba(0,0,0,0.3);
+            cursor:pointer;
+            z-index:1000;
+            overflow:hidden;
+            transition:transform 0.2s;
+            animation:pulse 2s infinite;
         }
-        
-        /* 头像样式 */
-        .avatar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #fff;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            z-index: 1000;
-            overflow: hidden;
-            transition: transform 0.2s;
+        .avatar img{width:100%;height:100%;object-fit:cover}
+        .avatar:active{transform:scale(0.9)}
+        .loader{
+            position:fixed;
+            top:0;left:0;
+            width:100%;height:100%;
+            background:rgba(0,0,0,0.85);
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            z-index:2000;
+            color:#FF2D55;
+            display:none;
         }
-        
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .spinner{
+            width:60px;height:60px;
+            border:5px solid rgba(255,255,255,0.2);
+            border-top:5px solid #FF2D55;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            margin-bottom:20px;
         }
-        
-        .avatar:active {
-            transform: scale(0.95);
+        .loader-text{
+            font-size:1.5rem;
+            font-weight:bold;
+            text-shadow:0 2px 4px rgba(0,0,0,0.5);
         }
-        
-        /* 加载指示器 */
-        .loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid #FF2D55;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 2000;
-            display: none;
-            transform: translate(-50%, -50%);
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes pulse{
+            0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0.7)}
+            70%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(255,45,85,0)}
+            100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0)}
         }
-        
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        /* 响应式适配 */
-        @media (max-width: 480px) {
-            .avatar {
-                width: 50px;
-                height: 50px;
-                top: 15px;
-                left: 15px;
-            }
+        @media (max-width:480px){
+            .avatar{width:50px;height:50px;top:15px;left:15px}
         }
     </style>
 </head>
 <body>
-    <!-- 头像 -->
     <div class="avatar" onclick="jumpToKuaishou()">
         <img src="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17/BMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg" alt="快手头像">
     </div>
     
-    <!-- 无限滚动区域 -->
     <div class="scroll-area"></div>
     
-    <!-- 加载指示器 -->
-    <div class="loader" id="loader"></div>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">正在唤起快手App...</div>
+    </div>
 
     <script>
-        // 预加载图片（确保快速显示）
-        const bgImg = new Image();
-        bgImg.src = 'https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300';
+        // 预加载图片确保立即显示
+        new Image().src = 'https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300';
+        new Image().src = 'https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17/BMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg';
         
-        const avatarImg = new Image();
-        avatarImg.src = 'https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17/BMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg';
-        
-        // 快手跳转函数
         function jumpToKuaishou() {
             const loader = document.getElementById('loader');
-            loader.style.display = 'block';
+            loader.style.display = 'flex';
             
-            // 快手App的scheme
-            const kuaishouScheme = 'kuaishou://profile/123456789';
+            // 快手App的scheme（直接唤起应用）
+            const kuaishouScheme = 'kuaishou://short-video/nSmK2Dap';
             
-            // 创建iframe唤起App（兼容iOS）
+            // 创建iframe唤起App（iOS兼容）
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
             iframe.src = kuaishouScheme;
@@ -122,22 +110,18 @@
                 window.location.href = kuaishouScheme;
             }, 10);
             
-            // 备用方案：如果500ms后未唤起成功，尝试其他方法
+            // 监听页面可见性变化（判断是否唤起成功）
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) loader.style.display = 'none';
+            });
+            
+            // 如果500ms后页面仍然可见，说明唤起失败
             setTimeout(() => {
                 if (!document.hidden) {
-                    // 尝试使用Universal Link（直接唤起App）
-                    window.location.href = 'https://v.kuaishou.com/nSmK2Dap';
-                } else {
                     loader.style.display = 'none';
+                    alert('未检测到快手App，请确保已安装最新版快手');
                 }
             }, 500);
-            
-            // 监听页面隐藏事件（唤起成功）
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden) {
-                    loader.style.display = 'none';
-                }
-            });
         }
     </script>
 </body>

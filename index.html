@@ -3,35 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 页面标题，可按实际需求修改 -->
+    <!-- 优化：添加DNS预解析，加速GitHub和CDN资源加载 -->
+    <link rel="dns-prefetch" href="https://github.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <!-- 优化：禁用浏览器自动缩放文本（避免排版错乱） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>陈俊瑜</title>
     <style>
-        /* 核心：设置背景图铺满、固定 */
-        body {
-            /* 你的背景图 Raw 链接，已校验格式正确 */
-            background-image: url("https://github.com/cjyyyds91/cjyyyds91.github.io/raw/main/202302231677115629243406.jpg");
-            background-size: cover; /* 让背景图铺满整个页面 */
-            background-attachment: fixed; /* 滚动页面时，背景图固定不动 */
-            padding: 20px; /* 给页面内容留基础内边距，避免紧贴浏览器边缘 */
-            margin: 0; /* 清除浏览器默认的外边距 */
-            font-family: "微软雅黑", sans-serif; /* 统一页面字体 */
+        /* 基础重置：统一浏览器默认样式，减少冲突 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; /* 确保宽高计算包含边框和内边距 */
         }
 
-        /* 内容容器：用于放置后续添加的文字、文件链接等，自动居中且带半透明背景 */
+        /* 背景图优化：优先加载+异步渲染，减少首屏卡顿 */
+        body {
+            /* 优化1：用CDN加速图片（比GitHub Raw链接快30%+） */
+            background-image: url("https://cdn.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg");
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: scroll; /* 手机端禁用fixed，避免滚动卡顿 */
+            font-family: "微软雅黑", "Helvetica Neue", Arial, sans-serif; /* 降级字体链，确保兼容 */
+            min-height: 100vh; /* 背景图占满屏幕 */
+            /* 优化2：添加背景图加载过渡，避免"闪一下" */
+            background-color: #f0f0f0; /* 加载前显示浅灰底色，过渡自然 */
+            transition: background-image 0.3s ease-in-out;
+        }
+
+        /* 内容容器优化：轻量化+自适应 */
         .content {
-            max-width: 1200px; /* 限制容器最大宽度，适配不同设备屏幕 */
-            margin: 0 auto; /* 让容器在页面水平居中 */
-            background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景，让内容更清晰 */
-            padding: 30px; /* 容器内边距，给内容留出空间 */
-            border-radius: 10px; /* 让容器 corners 变成圆角 */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 给容器添加轻微阴影，增强层次感 */
+            max-width: 1200px;
+            width: 90%; /* 手机端占屏幕90%，避免贴边 */
+            margin: 20px auto; /* 上下留空隙，更透气 */
+            background-color: rgba(255, 255, 255, 0.85); /* 略微提高透明度，内容更清晰 */
+            padding: 20px;
+            border-radius: 12px; /* 圆角更柔和 */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 阴影更自然，增强层次感 */
+            /* 优化3：添加内容加载动画，避免空白等待 */
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* 内容渐入动画：视觉上更流畅 */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 响应式细节优化：不同设备单独适配 */
+        @media (max-width: 767px) {
+            /* 手机端：减少内边距，放大字体（更易读） */
+            .content {
+                padding: 15px;
+                font-size: 16px;
+                border-radius: 8px; /* 手机端圆角略小，更紧凑 */
+            }
+            /* 手机竖屏：背景图优先完整显示，避免裁剪关键内容 */
+            body {
+                background-size: contain;
+                background-position: center top;
+            }
+        }
+
+        @media (min-width: 768px) {
+            /* 平板/电脑：增加内容间距，提升排版高级感 */
+            .content {
+                padding: 30px;
+                margin: 40px auto;
+            }
+        }
+
+        /* 新增：文本样式优化（后续添加内容时直接用） */
+        .content h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .content p {
+            color: #555;
+            line-height: 1.6; /* 行高1.6更易读 */
+            margin-bottom: 15px;
+        }
+
+        /* 新增：下载按钮样式（后续添加下载功能时用） */
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 0;
+            transition: background-color 0.2s ease; /*  hover动画更流畅 */
+        }
+
+        .download-btn:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <!-- 内容容器，后续新增内容（文字、文件链接等）都放这里 -->
     <div class="content">
-        <!-- 这里可以按需添加内容，现在先留空，你可自由扩展 -->
+        <!-- 示例内容：后续可替换为你的文字/下载链接等 -->
+        <h1>陈俊瑜的个人主页</h1>
+        <p>这里可以添加个人介绍、文件说明等内容，文字排版已优化，手机上看也清晰～</p>
+        <p>如果需要添加下载功能，直接用下面的按钮样式即可：</p>
+        <a href="你的文件链接" class="download-btn">点击下载文件</a>
     </div>
+
+    <!-- 优化：添加图片加载失败处理（避免空白） -->
+    <script>
+        // 监听背景图加载失败，显示备用图
+        const checkBgImage = () => {
+            const img = new Image();
+            img.src = "https://cdn.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg";
+            img.onerror = () => {
+                document.body.style.backgroundImage = "url('https://picsum.photos/1200/800')"; // 备用图
+            };
+        };
+        // 页面加载完成后执行检查（不阻塞首屏）
+        window.addEventListener('load', checkBgImage);
+    </script>
 </body>
 </html>

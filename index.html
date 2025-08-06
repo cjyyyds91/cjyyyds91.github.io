@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>陈俊瑜</title>
+    <style>
+        /* 核心：壁纸铺满、固定 */
+        body {
+            background-image: url(<span style="color: pink;">"https://github.com/cjyyyds91/cjyyyds91.github.io/blob/main/202302231677115629243406.jpg"</span>); 
+            background-size: cover;   /* 壁纸铺满页面 */
+            background-attachment: fixed; /* 滚动时壁纸固定 */
+            padding: 20px; /* 给内容留基础边距，后续加内容不会贴边 */
+            margin: 0; /* 清除默认边距 */
+            font-family: "微软雅黑", sans-serif; /* 统一字体 */
+        }
+
+        /* 内容容器：后续所有新增内容（文字、文件、安装包等）放这里，自动居中+带半透明背景 */
+        .content {
+            max-width: 1200px; /* 限制最大宽度，适配不同屏幕 */
+            margin: 0 auto; /* 水平居中 */
+            background: rgba(255, 255, 255, 0.8); /* 半透明背景，让内容清晰 */
+            padding: 30px; 
+            border-radius: 10px; /* 圆角 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+        }
+
+        /* 标题、段落等基础样式（可后续自由修改） */
+        h1, p {
+            margin: 0 0 20px 0; /* 简单边距，让内容不挤在一起 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 所有后续要加的内容（文字、文件下载、安装包等）都放到这个容器里 -->
+    <div class="content">
+        <!-- 这里现在是空白，你后续想加什么就写什么：
+             比如 <h1>我的标题</h1> 
+                  <p>我的介绍</p> 
+                  <a href="文件链接">下载文件</a> 
+                  <img src="图片链接"> 
+             完全自由扩展！ -->
+    </div>
+</body>
+</html>

@@ -1,117 +1,50 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
-    <title>陈俊瑜</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 预加载背景图，提升加载速度 -->
+  <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
+  <title>背景无限滚动示例</title>
+  <style>
+    /* 基础重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-        body {
-            min-height: 100vh;
-            background: #f2f2f2;
-            position: relative;
-            overflow-x: hidden;
-        }
+    body {
+      /* 背景图相关设置，固定背景，不随滚动移动 */
+      background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed;
+      min-height: 100vh;
+      /* 让页面可无限滚动的关键，通过伪元素动态增加高度 */
+      position: relative;
+      overflow-y: scroll; /* 开启垂直滚动 */
+    }
 
-        /* 固定背景图：滚动时不移动 */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-attachment: fixed; /* 关键属性 */
-            background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat;
-            z-index: -1;
-            transform: translateZ(0);
-        }
+    /* 动态生成无限滚动的高度，这里用伪元素每隔一定高度插入空白区域 */
+    body::after {
+      content: "";
+      display: block;
+      /* 每次添加 500px 高度，可调整数值改变滚动节奏 */
+      height: 500vh; 
+    }
 
-        .content {
-            max-width: 1140px;
-            width: 90%;
-            margin: 2rem auto;
-            background: rgba(255, 255, 255, 0.88);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            opacity: 0;
-            transform: translateY(10px);
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                padding: 1rem;
-                font-size: 1rem;
-            }
-        }
-
-        .content h1 {
-            color: #333;
-            margin-bottom: 1rem;
-            font-size: 2rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0.5rem;
-        }
-
-        .content p {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        /* 加载失败兜底（备用图） */
-        .bg-fail::after {
-            background-image: url("https://picsum.photos/1200/800") !important;
-        }
-    </style>
+    /* 响应式适配，保证不同设备显示一致 */
+    @media (max-width: 768px) {
+      body::after {
+        height: 300vh; /* 手机端适当减少每次增加的高度，让滚动更顺畅 */
+      }
+    }
+  </style>
 </head>
-<body>
-    <div class="content">
-        <h1>陈俊瑜的个人主页</h1>
-        <p>背景图已固定，滚动时不会移动，像壁纸一样～</p>
-        <!-- 重复添加内容，让页面可滚动 -->
-        <p>滚动测试行 1</p>
-        <p>滚动测试行 2</p>
-        <p>滚动测试行 3</p>
-        <p>滚动测试行 4</p>
-        <p>滚动测试行 5</p>
-        <p>滚动测试行 6</p>
-        <p>滚动测试行 7</p>
-        <p>滚动测试行 8</p>
-        <p>滚动测试行 9</p>
-        <p>滚动测试行 10</p>
-        <p>滚动测试行 11</p>
-        <p>滚动测试行 12</p>
-        <p>滚动测试行 13</p>
-        <p>滚动测试行 14</p>
-        <p>滚动测试行 15</p>
-    </div>
 
-    <script>
-        window.onload = function() {
-            const checkBg = new Image();
-            checkBg.src = "https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg";
-            checkBg.onerror = function() {
-                document.body.classList.add("bg-fail");
-            };
-        };
-    </script>
+<body>
+  <!-- 页面无实际内容，就是空的 -->
 </body>
+
 </html>

@@ -2,87 +2,129 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 核心：覆盖所有设备的viewport，包括刘海屏 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- 预加载背景图（必加！让所有设备更快显示背景） -->
     <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
-    <title>陈俊瑜</title>
+    <title>背景+头像+快手跳转</title>
     <style>
-        /* 基础重置：全设备统一 */
         * {
             margin: 0; 
             padding: 0; 
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* 移除安卓点击阴影 */
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* 背景图核心适配：全设备完整显示 */
         body {
-            /* 复合属性：固定+完整显示+居中 */
-            background: 
-                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") 
-                center/cover no-repeat fixed; 
+            background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed; 
             min-height: 100vh;
-            overflow-y: scroll; /* 强制滚动，兼容旧安卓 */
-            /* 适配苹果刘海屏/安卓水滴屏 */
+            overflow-y: scroll;
             padding: 
-                constant(safe-area-inset-top, 0) 
+                constant(safe-area-inset-top, 20px) 
                 constant(safe-area-inset-right, 0) 
                 constant(safe-area-inset-bottom, 0) 
-                constant(safe-area-inset-left, 0) 
-                padding: 
-                env(safe-area-inset-top, 0) 
+                constant(safe-area-inset-left, 20px);
+            padding: 
+                env(safe-area-inset-top, 20px) 
                 env(safe-area-inset-right, 0) 
                 env(safe-area-inset-bottom, 0) 
-                env(safe-area-inset-left, 0);
+                env(safe-area-inset-left, 20px);
         }
 
-        /* 无限滚动：动态生成高度（所有设备一致） */
+        /* 无限滚动高度（滑动时会覆盖头像） */
         body::after {
             content: "";
             display: block;
-            height: 2000vh; /* 足够长的滚动空间，数值越大滚动越久 */
+            height: 2000vh; /* 足够长，滑动时能覆盖头像 */
         }
 
-        /* 响应式细分：覆盖所有设备断点 */
-        /* 小屏手机（320px-480px） */
+        /* 左上角圆形快手头像 */
+        .avatar {
+            position: absolute; /* 非固定，滑动时会被覆盖 */
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%; /* 圆形 */
+            /* 替换为你的快手头像链接！！！ */
+            background: url("你的快手头像图片地址") center/cover no-repeat; 
+            border: 2px solid white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            z-index: 5; /* 初始在表层，滑动后被下方滚动区域覆盖 */
+        }
+
+        /* 中间启动快手按钮 */
+        .kuaishou-btn-container {
+            position: fixed; /* 固定在屏幕中间，不随滑动消失 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; /* 始终在最上层，不被覆盖 */
+        }
+        .kuaishou-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .kuaishou-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* 响应式适配 */
         @media (max-width: 480px) {
             body {
-                background-size: auto 100vh; /* 优先保证高度完整 */
-                background-position: center top;
+                background-size: auto 100vh;
+            }
+            .avatar {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                left: 15px;
+            }
+            .kuaishou-btn {
+                padding: 10px 20px;
+                font-size: 14px;
             }
         }
 
-        /* 平板及以上（768px+） */
-        @media (min-width: 768px) {
-            body::after {
-                height: 3000vh; /* 平板滚动更久 */
-            }
-        }
-
-        /* 横屏设备（手机/平板横屏） */
         @media (orientation: landscape) {
             body {
-                background-size: 100vw auto; /* 横屏时优先保证宽度完整 */
-                background-position: center center;
-            }
-        }
-
-        /* 动画优化：避免低端设备卡顿 */
-        @supports not (background-attachment: fixed) {
-            /* 旧设备降级方案（如安卓4.4以下） */
-            body {
-                background-attachment: scroll;
-                animation: bg-fade 2s ease-in-out;
-            }
-            @keyframes bg-fade {
-                0% { opacity: 0; }
-                100% { opacity: 1; }
+                background-size: 100vw auto;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 无任何实际内容，纯背景+无限滚动 -->
+    <!-- 左上角快手头像（点击跳转） -->
+    <div class="avatar" onclick="openKuaishou()"></div>
+
+    <!-- 中间启动快手按钮（点击跳转） -->
+    <div class="kuaishou-btn-container">
+        <button class="kuaishou-btn" onclick="openKuaishou()">
+            打开快手查看内容
+        </button>
+    </div>
+
+    <script>
+        function openKuaishou() {
+            const kuaishouWebUrl = 'https://v.kuaishou.com/nSmK2Dap';
+            const kuaishouScheme = 'kuaishou://short-video/' + kuaishouWebUrl.split('/').pop();
+
+            // 优先唤起快手App，失败跳网页版
+            window.location.href = kuaishouScheme;
+            setTimeout(() => {
+                const isHidden = document.hidden || document.webkitHidden;
+                if (!isHidden) {
+                    window.location.href = kuaishouWebUrl;
+                }
+            }, 1000);
+        }
+    </script>
 </body>
 </html>

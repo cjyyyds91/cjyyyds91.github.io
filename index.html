@@ -1,127 +1,117 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- 预加载头像图片，加快加载速度 -->
-    <link rel="preload" href="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg" as="image" type="image/jpeg">
-    <title>陈俊瑜</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极速优化版：背景+头像+快手跳转</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        body{
+            min-height:100vh;
+            background:#6a11cb;
+            padding:env(safe-area-inset-top,20px) 0 0 env(safe-area-inset-left,20px);
+            position:relative;
+            overflow-y:scroll;
         }
-
-        body {
-            background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed;
-            min-height: 100vh;
-            overflow-y: scroll;
-            padding:
-                constant(safe-area-inset-top, 20px)
-                constant(safe-area-inset-right, 0)
-                constant(safe-area-inset-bottom, 0)
-                constant(safe-area-inset-left, 20px);
-            padding:
-                env(safe-area-inset-top, 20px)
-                env(safe-area-inset-right, 0)
-                env(safe-area-inset-bottom, 0)
-                env(safe-area-inset-left, 20px);
-            /* 优化图片加载，根据设备像素比设置不同分辨率图片，可根据实际情况进一步完善 */
-            background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
-                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg");
-            background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
-                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body::after{
+            content:"";
+            position:fixed;
+            top:0;left:0;
+            width:100%;height:100%;
+            background:url("https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300") center/cover no-repeat;
+            z-index:-1;
+            opacity:0;
+            transition:opacity .5s;
         }
-
-        body::after {
-            content: "";
-            display: block;
-            height: 2000vh;
+        body.bg-loaded::after{opacity:1}
+        .infinite-scroll{height:500vh} /* 调整为500vh足够滚动 */
+        .avatar{
+            position:fixed;
+            top:20px;left:20px;
+            width:60px;height:60px;
+            border-radius:50%;
+            background:#fff linear-gradient(45deg,#ff9a9e,#fad0c4);
+            border:2px solid #fff;
+            box-shadow:0 2px 8px rgba(0,0,0,0.3);
+            cursor:pointer;
+            z-index:999;
+            overflow:hidden;
         }
-
-       .avatar {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            /* 设置为你的头像链接 */
-            background: url("https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg") center/cover no-repeat;
-            border: 2px solid white;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            /* 优化触摸目标区域，提升移动端点击体验 */
-            touch-action: manipulation;
+        .avatar img{
+            width:100%;height:100%;
+            object-fit:cover;
+            opacity:0;
+            transition:opacity .3s;
         }
-
-        @media (max-width: 480px) {
-            body {
-                background-size: auto 100vh;
-                background-position: center top;
-            }
-
-           .avatar {
-                width: 50px;
-                height: 50px;
-                top: 15px;
-                left: 15px;
-            }
+        .avatar img.loaded{opacity:1}
+        .loader{
+            position:fixed;
+            top:50%;left:50%;
+            width:40px;height:40px;
+            border:3px solid rgba(255,255,255,0.2);
+            border-top:3px solid #fff;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+            z-index:1000;
+            display:none;
+            transform:translate(-50%,-50%);
         }
-
-        @media (min-width: 768px) {
-            body::after {
-                height: 3000vh;
-            }
-        }
-
-        @media (orientation: landscape) {
-            body {
-                background-size: 100vw auto;
-            }
-        }
-
-        @supports not (background-attachment: fixed) {
-            body {
-                background-attachment: scroll;
-                animation: bg-fade 2s ease-in-out;
-            }
-
-            @keyframes bg-fade {
-                0% {
-                    opacity: 0;
-                }
-
-                100% {
-                    opacity: 1;
-                }
-            }
+        @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+        @media (max-width:480px){
+            .avatar{width:50px;height:50px;top:15px;left:15px}
         }
     </style>
 </head>
-
 <body>
-    <div class="avatar" onclick="openKuaishou()"></div>
+    <div class="loader" id="loader"></div>
+    <div class="avatar" onclick="openKuaishou()">
+        <img 
+            id="avatarImg" 
+            src="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg" 
+            alt="快手头像"
+            loading="lazy"
+        >
+    </div>
+    <div class="infinite-scroll"></div>
+    
     <script>
+        // 初始显示加载器
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
+        
+        // 图片加载优化
+        const bgImg = new Image();
+        bgImg.src = "https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300";
+        bgImg.onload = () => document.body.classList.add('bg-loaded');
+        
+        const avatarImg = document.getElementById('avatarImg');
+        avatarImg.onload = () => avatarImg.classList.add('loaded');
+        
+        // 检查加载完成
+        function checkLoaded() {
+            if (document.body.classList.contains('bg-loaded') && 
+                document.getElementById('avatarImg').classList.contains('loaded')) {
+                loader.style.display = 'none';
+            } else {
+                setTimeout(checkLoaded, 100);
+            }
+        }
+        setTimeout(checkLoaded, 500);
+        
+        // 快手跳转功能
         function openKuaishou() {
+            loader.style.display = 'block';
             const kuaishouUrl = 'https://v.kuaishou.com/nSmK2Dap';
-            const kuaishouScheme = 'kuaishou://short-video/' + kuaishouUrl.split('/').pop();
-            window.location.href = kuaishouScheme;
+            const path = kuaishouUrl.split('/').pop();
+            
+            // 尝试直接唤起App
+            location.href = `kuaishou://short-video/${path}`;
+            
+            // 设置备用方案
             setTimeout(() => {
-                const isHidden = document.hidden || document.webkitHidden;
-                if (!isHidden) {
-                    window.location.href = kuaishouUrl;
-                }
-            }, 500);
+                if (!document.hidden) location.href = kuaishouUrl;
+            }, 300);
         }
     </script>
 </body>
-
 </html>

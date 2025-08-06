@@ -1,50 +1,88 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 预加载背景图，提升加载速度 -->
-  <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
-  <title>陈俊瑜</title>
-  <style>
-    /* 基础重置 */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-user-select: none;
-      user-select: none;
-    }
+    <meta charset="UTF-8">
+    <!-- 核心：覆盖所有设备的viewport，包括刘海屏 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- 预加载背景图（必加！让所有设备更快显示背景） -->
+    <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
+    <title>全设备适配 - 背景固定无限滚动</title>
+    <style>
+        /* 基础重置：全设备统一 */
+        * {
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* 移除安卓点击阴影 */
+        }
 
-    body {
-      /* 背景图相关设置，固定背景，不随滚动移动 */
-      background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed;
-      min-height: 100vh;
-      /* 让页面可无限滚动的关键，通过伪元素动态增加高度 */
-      position: relative;
-      overflow-y: scroll; /* 开启垂直滚动 */
-    }
+        /* 背景图核心适配：全设备完整显示 */
+        body {
+            /* 复合属性：固定+完整显示+居中 */
+            background: 
+                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") 
+                center/cover no-repeat fixed; 
+            min-height: 100vh;
+            overflow-y: scroll; /* 强制滚动，兼容旧安卓 */
+            /* 适配苹果刘海屏/安卓水滴屏 */
+            padding: 
+                constant(safe-area-inset-top, 0) 
+                constant(safe-area-inset-right, 0) 
+                constant(safe-area-inset-bottom, 0) 
+                constant(safe-area-inset-left, 0) 
+                padding: 
+                env(safe-area-inset-top, 0) 
+                env(safe-area-inset-right, 0) 
+                env(safe-area-inset-bottom, 0) 
+                env(safe-area-inset-left, 0);
+        }
 
-    /* 动态生成无限滚动的高度，这里用伪元素每隔一定高度插入空白区域 */
-    body::after {
-      content: "";
-      display: block;
-      /* 每次添加 500px 高度，可调整数值改变滚动节奏 */
-      height: 500vh; 
-    }
+        /* 无限滚动：动态生成高度（所有设备一致） */
+        body::after {
+            content: "";
+            display: block;
+            height: 2000vh; /* 足够长的滚动空间，数值越大滚动越久 */
+        }
 
-    /* 响应式适配，保证不同设备显示一致 */
-    @media (max-width: 768px) {
-      body::after {
-        height: 300vh; /* 手机端适当减少每次增加的高度，让滚动更顺畅 */
-      }
-    }
-  </style>
+        /* 响应式细分：覆盖所有设备断点 */
+        /* 小屏手机（320px-480px） */
+        @media (max-width: 480px) {
+            body {
+                background-size: auto 100vh; /* 优先保证高度完整 */
+                background-position: center top;
+            }
+        }
+
+        /* 平板及以上（768px+） */
+        @media (min-width: 768px) {
+            body::after {
+                height: 3000vh; /* 平板滚动更久 */
+            }
+        }
+
+        /* 横屏设备（手机/平板横屏） */
+        @media (orientation: landscape) {
+            body {
+                background-size: 100vw auto; /* 横屏时优先保证宽度完整 */
+                background-position: center center;
+            }
+        }
+
+        /* 动画优化：避免低端设备卡顿 */
+        @supports not (background-attachment: fixed) {
+            /* 旧设备降级方案（如安卓4.4以下） */
+            body {
+                background-attachment: scroll;
+                animation: bg-fade 2s ease-in-out;
+            }
+            @keyframes bg-fade {
+                0% { opacity: 0; }
+                100% { opacity: 1; }
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <!-- 页面无实际内容，就是空的 -->
+    <!-- 无任何实际内容，纯背景+无限滚动 -->
 </body>
-
 </html>

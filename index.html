@@ -3,69 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>极简优化版</title>
+    <title>陈俊瑜</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{
-            min-height:100vh;
-            background:#6a11cb;
-            padding:env(safe-area-inset-top,20px) 0 0 env(safe-area-inset-left,20px);
-            position:relative;
-            overflow-y:scroll;
-            font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        body::after{
-            content:"";
-            position:fixed;
-            top:0;left:0;
-            width:100%;height:100%;
-            background:url("https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300") center/cover no-repeat fixed;
-            z-index:-1;
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            overflow: hidden;
+            position: relative;
+            padding: env(safe-area-inset-top, 20px) 0 0 env(safe-area-inset-left, 20px);
         }
-        .infinite-scroll{height:200vh} /* 两屏高度 */
-        .avatar{
-            position:fixed;
-            top:20px;left:20px;
-            width:60px;height:60px;
-            border-radius:50%;
-            background:url("https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg") center/cover no-repeat #fff;
-            border:2px solid #fff;
-            box-shadow:0 2px 8px rgba(0,0,0,0.3);
-            cursor:pointer;
-            z-index:999;
+        
+        .avatar {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            animation: pulse 2s infinite;
+            border: 3px solid #fff;
         }
-        @media (max-width:480px){
-            .avatar{width:50px;height:50px;top:15px;left:15px}
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .content {
+            height: 200vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            color: white;
+            display: none;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #FF2D55;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 45, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0); }
         }
     </style>
 </head>
 <body>
-    <div class="avatar" onclick="openKuaishou()"></div>
-    <div class="infinite-scroll"></div>
+    <div class="avatar" onclick="jumpToKuaishou()">
+        <img src="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17/BMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg" alt="快手头像">
+    </div>
     
+    <div class="content">
+        <h1>快手短视频平台</h1>
+        <p>发现精彩世界，记录美好生活</p>
+        <p>点击左上角头像立即跳转</p>
+    </div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>正在跳转至快手App...</p>
+    </div>
+
     <script>
-        // 预加载图片
-        function preloadImages() {
-            new Image().src = "https://img95.699pic.com/xsj/0m/m6/4n.jpg!w300";
-            new Image().src = "https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg";
-        }
-        
-        // 快手跳转功能（优化版）
-        function openKuaishou() {
+        function jumpToKuaishou() {
+            // 显示加载动画
+            document.getElementById('loading').style.display = 'flex';
+            
+            // 快手跳转链接
+            const kuaishouScheme = 'kuaishou://profile/123456789';
             const kuaishouUrl = 'https://v.kuaishou.com/nSmK2Dap';
-            const path = kuaishouUrl.split('/').pop();
             
-            // 尝试直接唤起App
-            location.href = `kuaishou://short-video/${path}`;
+            // 立即尝试唤起快手App
+            window.location.href = kuaishouScheme;
             
-            // 设置备用方案
+            // 设置备用跳转
             setTimeout(() => {
-                if (!document.hidden) location.href = kuaishouUrl;
+                if (!document.hidden) {
+                    window.location.href = kuaishouUrl;
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                }
             }, 300);
+            
+            // 监听页面可见性变化
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    document.getElementById('loading').style.display = 'none';
+                }
+            });
         }
-        
-        // 初始化
-        window.addEventListener('DOMContentLoaded', preloadImages);
     </script>
 </body>
 </html>

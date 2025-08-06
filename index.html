@@ -1,64 +1,74 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
+    <!-- 预加载头像图片，加快加载速度 -->
+    <link rel="preload" href="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg" as="image" type="image/jpeg">
     <title>背景+固定头像+快手跳转</title>
     <style>
         * {
-            margin: 0; 
-            padding: 0; 
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed; 
+            background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed;
             min-height: 100vh;
-            overflow-y: scroll; /* 允许滚动 */
-            padding: 
-                constant(safe-area-inset-top, 20px) 
-                constant(safe-area-inset-right, 0) 
-                constant(safe-area-inset-bottom, 0) 
+            overflow-y: scroll;
+            padding:
+                constant(safe-area-inset-top, 20px)
+                constant(safe-area-inset-right, 0)
+                constant(safe-area-inset-bottom, 0)
                 constant(safe-area-inset-left, 20px);
-            padding: 
-                env(safe-area-inset-top, 20px) 
-                env(safe-area-inset-right, 0) 
-                env(safe-area-inset-bottom, 0) 
+            padding:
+                env(safe-area-inset-top, 20px)
+                env(safe-area-inset-right, 0)
+                env(safe-area-inset-bottom, 0)
                 env(safe-area-inset-left, 20px);
+            /* 优化图片加载，根据设备像素比设置不同分辨率图片，可根据实际情况进一步完善 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
+                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg");
+            background-image: -webkit-linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
+                url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        /* 无限滚动区域（保证能滑动） */
         body::after {
             content: "";
             display: block;
-            height: 2000vh; /* 足够长的滚动空间 */
+            height: 2000vh;
         }
 
-        /* 左上角固定头像：始终显示，不被覆盖 */
-        .avatar {
-            position: fixed; /* 固定定位，滚动时不移动 */
+       .avatar {
+            position: fixed;
             top: 20px;
             left: 20px;
-            width: 60px; 
+            width: 60px;
             height: 60px;
-            border-radius: 50%; /* 圆形 */
-            /* 替换为你的快手头像链接！！！ */
-            background: url("你的快手头像地址") center/cover no-repeat; 
-            border: 2px solid white; /* 白色边框 */
+            border-radius: 50%;
+            /* 设置为你的头像链接 */
+            background: url("https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDYyNDAzOTg0N18yX2hkMzNfNzky_s.jpg") center/cover no-repeat;
+            border: 2px solid white;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            z-index: 999; /* 最高层级，永远在最上层 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            /* 优化触摸目标区域，提升移动端点击体验 */
+            touch-action: manipulation;
         }
 
-        /* 响应式适配 */
         @media (max-width: 480px) {
             body {
                 background-size: auto 100vh;
                 background-position: center top;
             }
-            .avatar {
+
+           .avatar {
                 width: 50px;
                 height: 50px;
                 top: 15px;
@@ -78,34 +88,32 @@
             }
         }
 
-        /* 旧设备降级动画 */
         @supports not (background-attachment: fixed) {
             body {
                 background-attachment: scroll;
                 animation: bg-fade 2s ease-in-out;
             }
+
             @keyframes bg-fade {
-                0% { opacity: 0; }
-                100% { opacity: 1; }
+                0% {
+                    opacity: 0;
+                }
+
+                100% {
+                    opacity: 1;
+                }
             }
         }
     </style>
 </head>
-<body>
-    <!-- 固定头像（点击跳转快手） -->
-    <div class="avatar" onclick="openKuaishou()"></div>
 
+<body>
+    <div class="avatar" onclick="openKuaishou()"></div>
     <script>
         function openKuaishou() {
-            // 你的快手内容链接
             const kuaishouUrl = 'https://v.kuaishou.com/nSmK2Dap';
-            // 快手唤起协议（自动触发系统询问）
             const kuaishouScheme = 'kuaishou://short-video/' + kuaishouUrl.split('/').pop();
-
-            // 直接唤起快手App（系统会弹出“是否打开”）
             window.location.href = kuaishouScheme;
-
-            // 备用：若唤起失败（如未安装App），500ms后跳网页版
             setTimeout(() => {
                 const isHidden = document.hidden || document.webkitHidden;
                 if (!isHidden) {
@@ -115,4 +123,5 @@
         }
     </script>
 </body>
+
 </html>

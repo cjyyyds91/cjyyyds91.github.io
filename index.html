@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 预加载高清背景图，优先级最高 -->
     <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
     <title>陈俊瑜</title>
     <style>
@@ -15,15 +14,14 @@
             user-select: none;
         }
 
-        /* 背景图铺满+高清加载 */
         body {
             min-height: 100vh;
-            background: #f2f2f2; /* 加载过渡色 */
+            background: #f2f2f2;
             position: relative;
-            overflow-x: hidden; /* 防止横向滚动 */
+            overflow-x: hidden;
         }
 
-        /* 伪元素强制铺满背景 */
+        /* 固定背景图：滚动时不移动 */
         body::after {
             content: "";
             position: fixed;
@@ -31,9 +29,9 @@
             left: 0;
             width: 100vw;
             height: 100vh;
+            background-attachment: fixed; /* 关键属性 */
             background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat;
             z-index: -1;
-            /* 硬件加速，加载更快 */
             transform: translateZ(0);
         }
 
@@ -57,7 +55,6 @@
             }
         }
 
-        /* 响应式适配（手机/平板） */
         @media (max-width: 768px) {
             .content {
                 padding: 1rem;
@@ -65,7 +62,6 @@
             }
         }
 
-        /* 文本&按钮样式 */
         .content h1 {
             color: #333;
             margin-bottom: 1rem;
@@ -80,20 +76,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .download-btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: #4CAF50;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background 0.2s ease;
-        }
-
-        .download-btn:hover {
-            background: #45a049;
-        }
-
         /* 加载失败兜底（备用图） */
         .bg-fail::after {
             background-image: url("https://picsum.photos/1200/800") !important;
@@ -103,11 +85,25 @@
 <body>
     <div class="content">
         <h1>陈俊瑜的个人主页</h1>
-        <p>背景图已高清铺满，加载速度提升300%，所有设备完美适配～</p>
-        <a href="你的下载链接" class="download-btn">点击下载文件</a>
+        <p>背景图已固定，滚动时不会移动，像壁纸一样～</p>
+        <!-- 重复添加内容，让页面可滚动 -->
+        <p>滚动测试行 1</p>
+        <p>滚动测试行 2</p>
+        <p>滚动测试行 3</p>
+        <p>滚动测试行 4</p>
+        <p>滚动测试行 5</p>
+        <p>滚动测试行 6</p>
+        <p>滚动测试行 7</p>
+        <p>滚动测试行 8</p>
+        <p>滚动测试行 9</p>
+        <p>滚动测试行 10</p>
+        <p>滚动测试行 11</p>
+        <p>滚动测试行 12</p>
+        <p>滚动测试行 13</p>
+        <p>滚动测试行 14</p>
+        <p>滚动测试行 15</p>
     </div>
 
-    <!-- 图片加载失败检测（JS兜底） -->
     <script>
         window.onload = function() {
             const checkBg = new Image();

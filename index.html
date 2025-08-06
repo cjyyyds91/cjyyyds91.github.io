@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="preload" href="https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg" as="image" type="image/jpeg">
-    <title>背景+头像+快手跳转</title>
+    <title>背景+固定头像+快手跳转</title>
     <style>
         * {
             margin: 0; 
@@ -16,7 +16,7 @@
         body {
             background: url("https://fastly.jsdelivr.net/gh/cjyyyds91/cjyyyds91.github.io/202302231677115629243406.jpg") center/cover no-repeat fixed; 
             min-height: 100vh;
-            overflow-y: scroll;
+            overflow-y: scroll; /* 允许滚动 */
             padding: 
                 constant(safe-area-inset-top, 20px) 
                 constant(safe-area-inset-right, 0) 
@@ -29,57 +29,34 @@
                 env(safe-area-inset-left, 20px);
         }
 
-        /* 无限滚动高度（滑动时会覆盖头像） */
+        /* 无限滚动区域（保证能滑动） */
         body::after {
             content: "";
             display: block;
-            height: 2000vh; /* 足够长，滑动时能覆盖头像 */
+            height: 2000vh; /* 足够长的滚动空间 */
         }
 
-        /* 左上角圆形快手头像 */
+        /* 左上角固定头像：始终显示，不被覆盖 */
         .avatar {
-            position: absolute; /* 非固定，滑动时会被覆盖 */
+            position: fixed; /* 固定定位，滚动时不移动 */
             top: 20px;
             left: 20px;
-            width: 60px;
+            width: 60px; 
             height: 60px;
             border-radius: 50%; /* 圆形 */
             /* 替换为你的快手头像链接！！！ */
-            background: url("你的快手头像图片地址") center/cover no-repeat; 
-            border: 2px solid white;
+            background: url("你的快手头像地址") center/cover no-repeat; 
+            border: 2px solid white; /* 白色边框 */
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            z-index: 5; /* 初始在表层，滑动后被下方滚动区域覆盖 */
-        }
-
-        /* 中间启动快手按钮 */
-        .kuaishou-btn-container {
-            position: fixed; /* 固定在屏幕中间，不随滑动消失 */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10; /* 始终在最上层，不被覆盖 */
-        }
-        .kuaishou-btn {
-            padding: 12px 24px;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            color: #000;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: all 0.2s;
-        }
-        .kuaishou-btn:hover {
-            background: white;
-            transform: scale(1.05);
+            z-index: 999; /* 最高层级，永远在最上层 */
         }
 
         /* 响应式适配 */
         @media (max-width: 480px) {
             body {
                 background-size: auto 100vh;
+                background-position: center top;
             }
             .avatar {
                 width: 50px;
@@ -87,9 +64,11 @@
                 top: 15px;
                 left: 15px;
             }
-            .kuaishou-btn {
-                padding: 10px 20px;
-                font-size: 14px;
+        }
+
+        @media (min-width: 768px) {
+            body::after {
+                height: 3000vh;
             }
         }
 
@@ -98,32 +77,41 @@
                 background-size: 100vw auto;
             }
         }
+
+        /* 旧设备降级动画 */
+        @supports not (background-attachment: fixed) {
+            body {
+                background-attachment: scroll;
+                animation: bg-fade 2s ease-in-out;
+            }
+            @keyframes bg-fade {
+                0% { opacity: 0; }
+                100% { opacity: 1; }
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 左上角快手头像（点击跳转） -->
+    <!-- 固定头像（点击跳转快手） -->
     <div class="avatar" onclick="openKuaishou()"></div>
-
-    <!-- 中间启动快手按钮（点击跳转） -->
-    <div class="kuaishou-btn-container">
-        <button class="kuaishou-btn" onclick="openKuaishou()">
-            打开快手查看内容
-        </button>
-    </div>
 
     <script>
         function openKuaishou() {
-            const kuaishouWebUrl = 'https://v.kuaishou.com/nSmK2Dap';
-            const kuaishouScheme = 'kuaishou://short-video/' + kuaishouWebUrl.split('/').pop();
+            // 你的快手内容链接
+            const kuaishouUrl = 'https://v.kuaishou.com/nSmK2Dap';
+            // 快手唤起协议（自动触发系统询问）
+            const kuaishouScheme = 'kuaishou://short-video/' + kuaishouUrl.split('/').pop();
 
-            // 优先唤起快手App，失败跳网页版
+            // 直接唤起快手App（系统会弹出“是否打开”）
             window.location.href = kuaishouScheme;
+
+            // 备用：若唤起失败（如未安装App），500ms后跳网页版
             setTimeout(() => {
                 const isHidden = document.hidden || document.webkitHidden;
                 if (!isHidden) {
-                    window.location.href = kuaishouWebUrl;
+                    window.location.href = kuaishouUrl;
                 }
-            }, 1000);
+            }, 500);
         }
     </script>
 </body>

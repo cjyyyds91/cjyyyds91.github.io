@@ -1,57 +1,53 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>快手跳转</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{min-height:100vh;background:url('https://img95.699pic.com/xsj/0m/m6/4n.jpg') center/cover fixed;font-family:'PingFang SC','Microsoft YaHei',sans-serif;position:relative;color:#fff;display:flex;justify-content:center;align-items:center;overflow:hidden}
-        body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:inherit;filter:brightness(0.7);z-index:-1}
-        .container{max-width:500px;width:90%;padding:20px;background:rgba(0,0,0,0.7);border-radius:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.5);backdrop-filter:blur(5px)}
-        h1{font-size:1.5rem;margin-bottom:15px;color:#FF2D55;text-shadow:0 0 10px rgba(255,45,85,0.7)}
-        .avatar{width:80px;height:80px;border-radius:50%;margin:15px auto;border:3px solid #fff;box-shadow:0 0 20px rgba(255,45,85,0.8);cursor:pointer;overflow:hidden;position:relative;animation:pulse 2s infinite}
-        .avatar img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s}
-        .avatar:hover img{transform:scale(1.1)}
-        .btn{display:inline-block;background:linear-gradient(to right,#FF2D55,#FF8C00);color:white;padding:12px 30px;border-radius:50px;font-size:1rem;font-weight:bold;text-decoration:none;margin:15px 0 5px;border:none;cursor:pointer;box-shadow:0 5px 15px rgba(255,45,85,0.4);transition:all 0.3s}
-        .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(255,45,85,0.6)}
-        .btn:active{transform:translateY(1px)}
-        .tip{font-size:0.8rem;opacity:0.8;margin-top:10px}
-        .loader{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;color:#FF2D55;display:none}
-        .spinner{width:50px;height:50px;border:5px solid rgba(255,255,255,0.1);border-top:5px solid #FF2D55;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:15px}
-        .loader-text{font-size:1.2rem;font-weight:bold}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0.7)}70%{transform:scale(1.05);box-shadow:0 0 0 15px rgba(255,45,85,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0)}}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>快手跳转</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:url('https://img95.699pic.com/xsj/0m/m6/4n.jpg') center/cover fixed;font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:#fff;display:flex;flex-direction:column;overflow-y:scroll}
+body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:inherit;filter:brightness(0.7);z-index:-1}
+.container{max-width:500px;width:90%;margin:30px auto;padding:20px;background:rgba(0,0,0,0.7);border-radius:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.5);backdrop-filter:blur(5px)}
+h1{font-size:1.5rem;margin-bottom:15px;color:#FF2D55;text-shadow:0 0 10px rgba(255,45,85,0.7)}
+.avatar{width:80px;height:80px;border-radius:50%;margin:15px;border:3px solid #fff;box-shadow:0 0 20px rgba(255,45,85,0.8);cursor:pointer;overflow:hidden;position:relative;animation:pulse 2s infinite;align-self:flex-start}
+.avatar img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.avatar:hover img{transform:scale(1.1)}
+.btn{display:inline-block;background:linear-gradient(to right,#FF2D55,#FF8C00);color:#fff;padding:12px 30px;border-radius:50px;font-size:1rem;font-weight:bold;text-decoration:none;margin:15px 0 5px;border:none;cursor:pointer;box-shadow:0 5px 15px rgba(255,45,85,0.4);transition:all .3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(255,45,85,0.6)}
+.btn:active{transform:translateY(1px)}
+.tip{font-size:.8rem;opacity:.8;margin-top:10px}
+.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;color:#FF2D55;display:none}
+.spinner{width:50px;height:50px;border:5px solid rgba(255,255,255,0.1);border-top:5px solid #FF2D55;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:15px}
+.loader-text{font-size:1.2rem;font-weight:bold}
+@keyframes pulse{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0.7)}70%{transform:scale(1.05);box-shadow:0 0 0 15px rgba(255,45,85,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,45,85,0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>快手跳转</h1>
-        <div class="avatar" onclick="jumpToKuaishou()">
-            <img src="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDY2NDAzOTg0N18yX2hkMzNfNzky_s.jpg" alt="快手头像">
-        </div>
-        <p>点击头像或按钮跳转快手</p>
-        <button class="btn" onclick="jumpToKuaishou()">跳转快手</button>
-        <p class="tip">未安装需先装最新版快手</p>
-    </div>
-    <div class="loader" id="loader">
-        <div class="spinner"></div>
-        <div class="loader-text">唤起快手中...</div>
-    </div>
-    <script>
-        window.onload=function(){new Image().src='https://img95.699pic.com/xsj/0m/m6/4n.jpg';new Image().src='https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDY2NDAzOTg0N18yX2hkMzNfNzky_s.jpg'}
-        function jumpToKuaishou(){
-            const loader=document.getElementById('loader');
-            loader.style.display='flex';
-            const kuaishouScheme='kuaishou://short-video/nSmK2Dap';
-            const iframe=document.createElement('iframe');
-            iframe.style.display='none';
-            iframe.src=kuaishouScheme;
-            document.body.appendChild(iframe);
-            setTimeout(()=>{window.location.href=kuaishouScheme},10);
-            document.addEventListener('visibilitychange',function(){if(document.hidden)loader.style.display='none'});
-            setTimeout(()=>{if(!document.hidden){loader.style.display='none';alert('未检测到快手，请安装最新版')}} ,500);
-        }
-    </script>
+<div class="container">
+    <h1>快手跳转</h1>
+    <div class="avatar" onclick="jumpToKuaishou()"><img src="https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDY2NDAzOTg0N18yX2hkMzNfNzky_s.jpg" alt="快手头像"></div>
+    <p>点击头像或按钮跳转快手</p>
+    <button class="btn" onclick="jumpToKuaishou()">跳转快手</button>
+    <p class="tip">未安装需先装最新版快手</p>
+</div>
+<div class="container"><h1>更多内容</h1><p>这里是第二屏内容，测试滚动效果...</p></div>
+<div class="container"><h1>继续滑动</h1><p>第三屏内容，确保可以无限滚动...</p></div>
+<div class="loader" id="loader"><div class="spinner"></div><div class="loader-text">唤起快手中...</div></div>
+<script>
+window.onload=function(){new Image().src='https://img95.699pic.com/xsj/0m/m6/4n.jpg';new Image().src='https://p66-pro.a.yximgs.com/uhead/AB/2025/06/19/17.aMjAyNTA2MTkxNzQyNTBfNDY2NDAzOTg0N18yX2hkMzNfNzky_s.jpg'}
+function jumpToKuaishou(){
+    const loader=document.getElementById('loader');
+    loader.style.display='flex';
+    const kuaishouScheme='kuaishou://short-video/nSmK2Dap';
+    const iframe=document.createElement('iframe');
+    iframe.style.display='none';
+    iframe.src=kuaishouScheme;
+    document.body.appendChild(iframe);
+    setTimeout(()=>{window.location.href=kuaishouScheme},10);
+    document.addEventListener('visibilitychange',()=>{document.hidden&&(loader.style.display='none')});
+    setTimeout(()=>{!document.hidden&&(loader.style.display='none',alert('未检测到快手，请安装最新版'))},500);
+}
+</script>
 </body>
 </html>
